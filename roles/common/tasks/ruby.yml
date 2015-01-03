@@ -1,0 +1,30 @@
+---
+# file: roles/common/tasks/ruby.yml
+
+- name: make init directory
+  command: mkdir -p /var/init
+  args:
+    creates: /var/init
+
+- name: make source directory
+  command: mkdir -p /src
+  args:
+    creates: /src
+
+- name: send ruby install script
+  copy: src=../files/install-ruby.sh dest=/var/init/install-ruby.sh
+  args:
+    mode: 0700
+  tags: ruby
+
+- name: be sure ruby is installed
+  command: /var/init/install-ruby.sh
+  args:
+    chdir: /src
+    creates: /usr/local/bin/ruby
+  tags: ruby
+
+- name: install bundler
+  command: gem install bundler
+  args:
+    creates: /usr/local/bin/bundle

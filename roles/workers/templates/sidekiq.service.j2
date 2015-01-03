@@ -1,0 +1,17 @@
+[Unit]
+Description=Sidekiq
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/app/current
+PIDFile=/var/app/support/logs/sidekiq.pid
+EnvironmentFile=/var/app/support/app.env
+ExecStart=/usr/local/bin/bundle exec sidekiq --index 0 --pidfile /var/app/support/logs/sidekiq.pid --environment {{ RAILS_ENV }} --logfile /var/app/support/logs/sidekiq.log
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=always
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

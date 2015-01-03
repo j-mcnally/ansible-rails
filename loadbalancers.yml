@@ -1,0 +1,7 @@
+---
+# file: workers.yml
+- hosts: "{{ myapp_env }}-myapp-loadbalancers"
+  remote_user: root
+  roles:
+    - common
+    - loadbalancers

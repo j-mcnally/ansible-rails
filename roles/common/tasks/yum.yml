@@ -1,0 +1,75 @@
+---
+# file: roles/common/tasks/yum.yml
+
+- name: install epel repo
+  command: rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+  args:
+    creates: /etc/yum.repos.d/epel.repo
+
+- name: be sure git is installed
+  yum: pkg=git state=installed
+  tags: git
+
+- name: be sure nodejs is installed
+  yum: pkg=nodejs enablerepo=epel state=installed
+  tags: nodejs
+
+- name: be sure lsof is installed
+  yum: pkg=lsof state=installed
+  tags: lsof
+
+- name: be sure wget is installed
+  yum: pkg=wget state=installed
+  tags: wget
+
+- name: be sure curl-devel is installed
+  yum: pkg=curl-devel state=installed
+  tags: curl-devel
+
+- name: be sure ImageMagick is installed
+  yum: pkg=ImageMagick state=installed
+  tags: ImageMagick
+  
+- name: be sure ImageMagick-devel is installed
+  yum: pkg=ImageMagick-devel state=installed
+  tags: ImageMagick-devel
+
+- name: be sure libxml2 is installed
+  yum: pkg=libxml2 state=installed
+  tags: libxml2
+
+- name: be sure libxml2-devel is installed
+  yum: pkg=libxml2-devel state=installed
+  tags: libxml2-devel
+
+- name: be sure libxslt is installed
+  yum: pkg=libxslt state=installed
+  tags: libxslt
+
+- name: be sure libxslt-devel is installed
+  yum: pkg=libxslt-devel state=installed
+  tags: libxslt-devel
+
+- name: be sure openssl is installed
+  yum: pkg=openssl state=installed
+  tags: openssl
+
+- name: be sure openssl-devel is installed
+  yum: pkg=openssl-devel state=installed
+  tags: openssl-devel
+
+- name: be sure postgresql is installed
+  yum: pkg=postgresql state=installed
+  tags: postgresql
+
+- name: be sure postgresql-libs is installed
+  yum: pkg=postgresql-libs state=installed
+  tags: postgresql-libs
+
+- name: be sure postgresql-devel is installed
+  yum: pkg=postgresql-devel state=installed
+  tags: postgresql-devel
+
+- name: be sure dev tools is installed
+  yum: pkg='@development' state=installed
+  tags: dev-tools

@@ -1,0 +1,37 @@
+---
+# file: roles/common/tasks/main.yml
+
+- include_vars: "group_vars/{{ myapp_env }}.yml"
+
+- include: users.yml
+- include: yum.yml
+- include: ruby.yml
+- include: firewalld.yml
+
+- name: make app folder
+  command: "/bin/bash -c 'mkdir -p /var/app; chown webapp:wheel /var/app; chmod 744 /var/app'"
+  args:
+    creates: /var/app
+
+- name: make support folder
+  command: "/bin/bash -c 'mkdir -p /var/app/support; chown webapp:wheel /var/app/support; chmod 744 /var/app/support'"
+  args:
+    creates: /var/app/support
+
+- name: make logs folder
+  command: "/bin/bash -c 'mkdir -p /var/app/support/logs; chown webapp:wheel /var/app/support/logs; chmod 744 /var/app/support/logs'"
+  args:
+    creates: /var/app/support/logs
+  
+- name: send app environment
+  template: src=../templates/app.env.j2 dest=/var/app/support/app.env
+  args:
+    owner: webapp
+    group: webapp
+    mode: "u=rw,g=r,o=r"
+  notify:
+    - restart nginx
+  tags: nginx
+
+- name: set utc timezone
+  command: "/bin/bash -c 'unlink /etc/localtime; ln -s /usr/share/zoneinfo/UTC /etc/localtime'"

@@ -1,0 +1,63 @@
+user  webapp;
+worker_processes  4;
+
+error_log  /var/app/support/logs/error.log;
+pid        /var/app/support/logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    passenger_root /usr/local/lib/ruby/gems/2.1.0/gems/passenger-4.0.56;
+    passenger_ruby /usr/local/bin/ruby;
+
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/app/support/logs/host.access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    server {
+        listen       80;
+        server_name  localhost;
+        passenger_enabled on;
+        rails_env {{ RAILS_ENV }};
+        root /var/app/current/public;
+
+        location ~ \.(swf|png|jpg|gif|css|js|ttf|woff) {
+            root /var/app/current/public;
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Credentials' 'true';
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                add_header 'Content-Length' 0;
+                return 204;
+             }
+             if ($request_method = 'GET') {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Credentials' 'true';
+                add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+             }
+        }
+
+    }
+
+}

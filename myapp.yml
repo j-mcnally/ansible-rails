@@ -1,0 +1,7 @@
+---
+# file: myapp.yml
+- include: checks.yml
+- include: apps.yml
+- include: services.yml
+- include: workers.yml
+- include: loadbalancers.yml

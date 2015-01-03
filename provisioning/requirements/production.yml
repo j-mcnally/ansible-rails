@@ -1,0 +1,28 @@
+---
+# file: provisioning/requirements/production.yml
+
+myapp_servers:
+  - role: apps
+    servers:
+      - region_id: 8
+        size_id: 63
+        image_id: 7053293
+        internal_id: apps.1
+  - role: workers
+    servers:
+      - region_id: 8
+        size_id: 63
+        image_id: 7053293
+        internal_id: workers.1
+  - role: services
+    servers:
+      - region_id: 8
+        size_id: 63
+        image_id: 7053293
+        internal_id: services.1
+  - role: loadbalancers
+    servers:
+      - region_id: 8
+        size_id: 63
+        image_id: 7053293
+        internal_id: loadbalancers.1

@@ -1,0 +1,23 @@
+/var/app/shared/log/{{ myapp_env }}.log {
+    missingok
+    notifempty
+    size 20m
+    daily
+    create 0644 webapp webapp
+}
+
+/var/app/support/logs/error.log {
+    missingok
+    notifempty
+    size 20m
+    daily
+    create 0644 root root
+}
+
+/var/app/support/logs/host.access.log {
+    missingok
+    notifempty
+    size 20m
+    daily
+    create 0644 root root
+}

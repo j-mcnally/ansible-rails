@@ -1,0 +1,42 @@
+---
+# file: roles/common/tasks/users.yml
+
+- name: be sure webapp group is created
+  group: name=webapp
+
+- name: be sure webapp user is created
+  user: name=webapp
+  args:
+    comment: "myapp app user"
+    group: webapp
+    shell: /bin/bash
+    home: /home/webapp
+
+- name: make ssh directory
+  command: "/bin/bash -c  'mkdir -p /home/webapp/.ssh; chown webapp:wheel /home/webapp/.ssh; chmod 700 /home/webapp/.ssh'"
+  args:
+    creates: /home/webapp/.ssh
+
+- name: send github pem
+  copy: src=../files/myapp.github.pem dest=/home/webapp/.ssh/id_rsa
+  args:
+    mode: 0400
+    owner: webapp
+    group: wheel
+
+- name: add base rsa public key
+  authorized_key: user=webapp
+  args:
+    key: "{{ lookup('file', '../files/public_key') }}"
+    manage_dir: no
+    
+- name: make sudoers directory
+  command: mkdir -p /etc/sudoers.d
+  args:
+    creates: /etc/sudoers.d
+
+- name: allow wheel to sudo
+  copy: src=../files/wheel_extensions.sudoers dest=/etc/sudoers.d/wheel_extensions
+  args:
+    mode: 0440
+  tags: ruby

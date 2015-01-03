@@ -1,0 +1,2 @@
+Cmnd_Alias SERVICES = /usr/bin/systemctl
+webapp  ALL = NOPASSWD: SERVICES

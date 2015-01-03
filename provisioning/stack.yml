@@ -1,0 +1,9 @@
+---
+# file: provisioning/stack.yml
+
+- hosts: local
+  connection: local
+  vars:
+    myapp_ssh_public_key: "{{ lookup('file', '../roles/common/files/public_key') }}"
+  roles:
+    - common

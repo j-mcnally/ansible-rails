@@ -1,0 +1,4 @@
+---
+# file: roles/app/handlers/main.yml
+
+- include: nginx.yml

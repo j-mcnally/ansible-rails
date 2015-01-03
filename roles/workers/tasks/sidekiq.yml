@@ -1,0 +1,21 @@
+---
+# file: roles/workers/tasks/sidekiq.yml
+
+- name: send sidekiq service
+  template: src=../templates/sidekiq.service.j2 dest=/etc/systemd/system/sidekiq.service
+  args:
+    mode: 644
+  tags: sidekiq
+  notify:
+    - reload services
+
+- name: start sidekiq service on boot
+  service: name=sidekiq
+  args:
+    enabled: yes
+
+- name: logrotate sidekiq
+  copy: src=../files/sidekiq.logrotate dest=/etc/logrotate.d/sidekiq
+  args:
+    mode: 644
+  tags: sidekiq

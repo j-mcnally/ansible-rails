@@ -1,0 +1,6 @@
+---
+# file: roles/loadbalancers/tasks/yum.yml
+
+- name: be sure haproxy is installed
+  yum: pkg=haproxy state=installed
+  tags: haproxy

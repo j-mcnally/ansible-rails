@@ -1,0 +1,28 @@
+---
+# file: roles/services/tasks/redis.yml
+
+- name: start redis service
+  service: name=redis state=started
+  args:
+    enabled: true
+  tags: redis-server
+
+- name : send redis.conf
+  copy: src=../files/redis.conf dest=/etc/redis.conf
+  args:
+    mode: 0644
+    owner: redis
+    group: root
+  tags: redis-server
+  notify:
+    - restart redis
+
+- name: open port 6379
+  firewalld: port=6379/tcp
+  args:
+    permanent: true 
+    state: enabled
+    zone: internal
+  notify:
+    - reload firewall rules
+  tags: redis-server

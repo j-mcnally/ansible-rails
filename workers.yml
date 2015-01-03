@@ -1,0 +1,7 @@
+---
+# file: workers.yml
+- hosts: "{{ myapp_env }}-myapp-workers"
+  remote_user: root
+  roles:
+    - common
+    - workers

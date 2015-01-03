@@ -1,0 +1,7 @@
+---
+# file: app.yml
+- hosts: "{{ myapp_env }}-myapp-apps"
+  remote_user: root
+  roles:
+    - common
+    - apps

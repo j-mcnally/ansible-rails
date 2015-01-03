@@ -1,0 +1,13 @@
+# PostgreSQL Client Authentication Configuration File
+# ===================================================
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+{% for host in groups[myapp_env + '-myapp-apps'] %}
+host    all             all             {{ host }}/32           md5
+{% endfor %}
+{% for host in groups[myapp_env + '-myapp-workers'] %}
+host    all             all             {{ host }}/32           md5
+{% endfor %}  
+host    all             all             ::1/128                 trust

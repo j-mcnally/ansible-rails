@@ -1,0 +1,5 @@
+---
+# file: roles/common/handlers/main.yml
+
+- include: firewalld.yml
+- include: services.yml

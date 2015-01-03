@@ -1,0 +1,18 @@
+---
+# file: roles/services/tasks/memcached.yml
+
+- name: start memcached service
+  service: name=memcached state=started
+  args:
+    enabled: true
+  tags: memcached-server
+
+- name: open port 11211
+  firewalld: port=11211/tcp
+  args:
+    permanent: true 
+    state: enabled
+    zone: internal
+  notify:
+    - reload firewall rules
+  tags: memcached-server

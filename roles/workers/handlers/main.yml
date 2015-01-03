@@ -1,0 +1,7 @@
+---
+# file: roles/workers/handlers/main.yml
+
+- include: sidekiq.yml
+
+- name: restart nginx
+  command: "echo nop"

@@ -1,0 +1,8 @@
+---
+# file: roles/workers/handlers/main.yml
+
+- name: restart nginx
+  command: "echo nop"
+
+- name: restart haproxy
+  service: name=haproxy state=restarted

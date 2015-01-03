@@ -1,0 +1,19 @@
+---
+# file: roles/services/tasks/yum.yml
+
+- name: be sure postgresql-server is installed
+  yum: pkg=postgresql-server state=installed
+  tags: postgresql-server
+
+- name: install psycopg2
+  yum: pkg=python-psycopg2 state=installed
+  tags: python-psycopg2
+
+- name: be sure redis is installed
+  yum: pkg=redis state=installed
+  tags: redis-server
+
+- name: be sure memcached is installed
+  yum: pkg=memcached state=installed
+  tags: memcached-server
+

@@ -1,0 +1,5 @@
+---
+# file: roles/common/handlers/services.yml
+
+- name: reload services
+  command: systemctl daemon-reload

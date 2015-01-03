@@ -1,0 +1,14 @@
+---
+# file: roles/workers/tasks/main.yml
+
+- include: yum.yml
+- include: haproxy.yml
+
+- name: open port 80
+  firewalld: service=http
+  args:
+    permanent: true 
+    state: enabled 
+    zone: public
+  notify:
+    - reload firewall rules

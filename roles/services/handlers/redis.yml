@@ -1,0 +1,5 @@
+---
+# file: roles/services/handlers/redis.yml
+
+- name: restart redis
+  service: name=redis state=restarted

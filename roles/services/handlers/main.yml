@@ -1,0 +1,8 @@
+---
+# file: roles/services/handlers/main.yml
+
+- include: postgres.yml
+- include: redis.yml
+
+- name: restart nginx
+  command: "echo nop"

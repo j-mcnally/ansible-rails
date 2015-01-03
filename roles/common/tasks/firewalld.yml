@@ -1,0 +1,17 @@
+---
+# file: roles/common/tasks/firewalld.yml
+
+- name: start firewalld service
+  service: name=firewalld state=started
+  args:
+    enabled: true
+  tags: firewalld
+
+- name: send intranet zone
+  template: src=../templates/firewall.xml.j2 dest=/etc/firewalld/zones/internal.xml
+  args:
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - reload firewall rules

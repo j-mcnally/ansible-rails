@@ -1,0 +1,5 @@
+- hosts: all
+  connection: local
+  remote_user: root
+  tasks:
+    - group_by: key=name

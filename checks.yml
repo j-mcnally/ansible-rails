@@ -1,0 +1,6 @@
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: "ensure an myapp_env is set"
+      fail: msg="You must specify myapp_env as staging or production" 
+      when: myapp_env is not defined or myapp_env != "production" and myapp_env != "staging"

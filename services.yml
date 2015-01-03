@@ -1,0 +1,7 @@
+---
+# file: services.yml
+- hosts: "{{ myapp_env }}-myapp-services"
+  remote_user: root
+  roles:
+    - common
+    - services

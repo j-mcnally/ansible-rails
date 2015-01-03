@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>internal</short>
+  <description>internal network zone</description>
+    {% for host in groups[myapp_env + '-myapp-apps'] %}
+<source address="{{ host }}/32" />
+    {% endfor %}
+{% for host in groups[myapp_env + '-myapp-services'] %}
+<source address="{{ host }}/32" />
+{% endfor %}
+{% for host in groups[myapp_env + '-myapp-loadbalancers'] %}
+<source address="{{ host }}/32" />
+{% endfor %}
+{% for host in groups[myapp_env + '-myapp-workers'] %}
+<source address="{{ host }}/32" />
+{% endfor %}  
+</zone>

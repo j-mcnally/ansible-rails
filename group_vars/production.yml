@@ -1,0 +1,9 @@
+---
+# file: group_vars/development
+
+# App Environment
+SECRET_KEY_BASE: CHANGEME
+RAILS_ENV: production
+
+# DB Configuration
+postgres_password: CHANGME

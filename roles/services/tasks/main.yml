@@ -1,0 +1,6 @@
+---
+# file: roles/services/tasks/main.yml
+
+- include: yum.yml
+- include: postgres.yml
+- include: redis.yml

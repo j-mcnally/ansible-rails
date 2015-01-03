@@ -1,0 +1,14 @@
+---
+# file: roles/loadbalancers/tasks/haproxy.yml
+
+- name: send haproxy config based on app inventory
+  template: src=../templates/haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+  args:
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  notify:
+    - restart haproxy
+  tags: haproxy
+
+

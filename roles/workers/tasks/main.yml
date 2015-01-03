@@ -1,0 +1,5 @@
+---
+# file: roles/workers/tasks/main.yml
+
+- include: yum.yml
+- include: sidekiq.yml

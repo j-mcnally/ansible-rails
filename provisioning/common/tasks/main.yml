@@ -1,0 +1,36 @@
+---
+# file: provisioning/common/tasks/main.yml
+
+- name: "ensure an myapp_env is set"
+  fail: msg="You must specify myapp_env as staging or production" 
+  when: myapp_env is not defined or myapp_env != "production" and myapp_env != "staging"
+
+- include_vars: "../../requirements/{{ myapp_env }}.yml"
+- include_vars: ../../do_creds.yml
+- name: "Upload Digital Ocean ssh key"
+  digital_ocean: >
+    state=present
+    command=ssh
+    name="myapp"
+    ssh_pub_key="{{ myapp_ssh_public_key }}"
+    client_id="{{ digital_ocean['client_id'] }}"
+    api_key="{{ digital_ocean['api_key'] }}"
+  register: myapp_ssh_key
+
+- name: "Create required servers"
+  digital_ocean: >
+    state=present
+    command=droplet
+    name={{ myapp_env }}-myapp-{{ item.1.internal_id }}
+    unique_name=yes
+    private_networking=yes
+    client_id="{{ digital_ocean.client_id }}"
+    api_key="{{ digital_ocean.api_key }}"
+    size_id={{ item.1.size_id }}
+    region_id={{ item.1.region_id }}
+    image_id={{ item.1.image_id }}
+    ssh_key_ids={{ myapp_ssh_key['ssh_key']['id'] }}
+    wait_timeout=500
+  with_subelements: 
+    - myapp_servers
+    - servers

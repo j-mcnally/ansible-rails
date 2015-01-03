@@ -1,0 +1,5 @@
+---
+# file: roles/common/handlers/firewalld.yml
+
+- name: reload firewall rules
+  command: firewall-cmd --reload

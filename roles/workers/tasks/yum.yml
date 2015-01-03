@@ -1,0 +1,12 @@
+---
+# file: roles/workers/tasks/yum.yml
+
+- name: install awel-media repo
+  command: yum -y install http://awel.domblogger.net/7/base/noarch/awel-release-7-2.noarch.rpm
+  args:
+    creates: /etc/yum.repos.d/awel.repo
+  tags: ffmpeg
+
+- name: be sure ffmpeg is installed
+  yum: pkg=ffmpeg enablerepo=awel-media state=installed
+  tags: ffmpeg
