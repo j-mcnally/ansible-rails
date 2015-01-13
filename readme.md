@@ -82,6 +82,9 @@ To run the digital ocean provisioning scripts you may need the digital ocean pyt
 
 Mac OSX users should install ansible with brew. `brew install ansible`
 
+# Get Help
+
+You can find me in the #ansible room on irc.freenode.net
 
 # Contributing
 
