@@ -7,7 +7,7 @@
     creates: /usr/local/bin/passenger-install-nginx-module
 
 - name : install nginx and passenger
-  command: passenger-install-nginx-module --auto --prefix=/opt/nginx --auto-download --languages ruby
+  command: /bin/bash -l -c "swapoff /swapfile; rm /swapfile; dd if=/dev/zero of=/swapfile bs=1024 count=1024k; mkswap /swapfile; swapon /swapfile; passenger-install-nginx-module --auto --prefix=/opt/nginx --auto-download --languages ruby; swapoff /swapfile; rm /swapfile"
   args:
     creates: /opt/nginx/sbin/nginx
 
