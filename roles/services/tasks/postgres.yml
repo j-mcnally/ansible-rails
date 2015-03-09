@@ -42,7 +42,7 @@
 - name: send backup rotate
   copy: src=../files/postgres-bk.logrotate dest=/etc/logrotate.d/postgres-bk
   args:
-    mode: 644
+    mode: 0644
   tags: postgresql-server
 
 - include_vars: "group_vars/{{ myapp_env }}.yml"

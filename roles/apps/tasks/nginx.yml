@@ -14,7 +14,7 @@
 - name: send nginx conf
   template: src=../templates/nginx.conf.j2 dest=/opt/nginx/conf/nginx.conf
   args:
-    mode: 644
+    mode: 0644
   tags: nginx
   notify:
     - restart nginx
@@ -22,7 +22,7 @@
 - name: send nginx service
   copy: src=../files/nginx.service dest=/etc/systemd/system/nginx.service
   args:
-    mode: 644
+    mode: 0644
   tags: nginx
   notify:
     - reload services
@@ -36,5 +36,5 @@
 - name: logrotate nginx / rails
   template: src=../templates/app.logrotate.j2 dest=/etc/logrotate.d/appnginx
   args:
-    mode: 644
+    mode: 0644
   tags: nginx

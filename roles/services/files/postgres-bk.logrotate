@@ -1,6 +1,4 @@
 /var/backups/postgres.pgdump.gz {
-    missingok
-    notifempty
     daily
     rotate 8
     nocompress
