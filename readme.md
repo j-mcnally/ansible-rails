@@ -1,4 +1,4 @@
-# Rails-Ansible
+# Ansible-Rails
 
 Rails ansible is a collection of playbooks to bootstrap a full rails stack, complete with Postgres, Redis, Sidekiq, Nginx and HAProxy on Centos 7 targeting Digital Ocean as a host.
 
@@ -82,6 +82,9 @@ To run the digital ocean provisioning scripts you may need the digital ocean pyt
 
 Mac OSX users should install ansible with brew. `brew install ansible`
 
+# Get Help
+
+You can find me in the #ansible room on irc.freenode.net
 
 # Contributing
 
