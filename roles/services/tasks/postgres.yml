@@ -33,6 +33,18 @@
     enabled: true
   tags: postgresql-server
 
+- name: make backup folder
+  command: "/bin/bash -c  'mkdir -p /var/backups; chown postgres /var/backups; touch /var/backups/postgres.pgdump.gz'"
+  args:
+    creates: /var/backups/postgres.pgdump.gz
+  tags: postgresql-server
+
+- name: send backup rotate
+  copy: src=../files/postgres-bk.logrotate dest=/etc/logrotate.d/postgres-bk
+  args:
+    mode: 644
+  tags: postgresql-server
+
 - include_vars: "group_vars/{{ myapp_env }}.yml"
   tags: postgresql-server
 
@@ -44,6 +56,7 @@
     lc_collate: 'en_US.UTF-8'
     lc_ctype: 'en_US.UTF-8'
   tags: postgresql-server
+
 - name: create myapp db user
   postgresql_user: name=myapp 
   args: 

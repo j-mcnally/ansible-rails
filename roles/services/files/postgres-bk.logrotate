@@ -1,0 +1,12 @@
+/var/backups/postgres.pgdump.gz {
+    missingok
+    notifempty
+    daily
+    rotate 8
+    nocompress
+    create 640 webapp webapp
+    postrotate
+    sudo -u postgres pg_dumpall > /var/backups/postgres.pgdump 
+    gzip -9f /var/backups/postgres.pgdump
+    endscript
+}
