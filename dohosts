@@ -10,11 +10,10 @@ When run without arguments (or with --list),
 When run against a specific droplet host, returns informaiton about that droplet.
 
 Configuration is read from digitalocean.ini, then from environment variables, then
-and command-line arguments.  
+and command-line arguments.
 
 Most notably, the DigitalOcean Client ID and API Key must be specified.  They can
 be specified in the INI file or with the following environment variables:
-    export DIGITALOCEAN_CLIENT_ID='DO123'
     export DIGITALOCEAN_API_KEY='abc123'
 
 Alternatively, they can be passed on the command-line with --client-id and --api-key.
@@ -78,10 +77,10 @@ class DigitalOceanInventory(object):
         self.parse_cli_args()
 
         # Verify credentials were set
-        if not hasattr(self, 'client_id') or not hasattr(self, 'api_key'):
-            print '''Could not find DigitalOcean values for client_id and api_key.
-They must be specified, via either ini file, command line argument (--client-id and --api-key),
-or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
+        if not hasattr(self, 'api_key'):
+            print '''Could not find DigitalOcean values for api_key.
+They must be specified, via either ini file, command line argument (--api-key),
+or environment variables (DIGITALOCEAN_API_KEY)'''
             sys.exit(-1)
 
         # Check cache
@@ -110,12 +109,14 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
 
 
     def __do_api(self, path, params=dict()):
-        request = { 'client_id': self.client_id, 'api_key': self.api_key }
+        request = { 'page': '1', 'per_page': '250' }
         request.update(params)
-        response = requests.get("https://api.digitalocean.com/%s" % path, params=request)
-        data = response.json()
-        if data['status'] != "OK":
+        headers = {'Content-Type': 'application/json', "Authorization": "Bearer %s" % self.api_key}
+        response = requests.get("https://api.digitalocean.com/v2%s" % path, headers=headers, params=request)
+        print response.url
+        if response.status_code != requests.codes.ok:
             raise Exception(data)
+        data = response.json()
         return data
 
 
@@ -139,8 +140,6 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
         config.read(os.path.dirname(os.path.realpath(__file__)) + '/digitalocean.ini')
 
         # Credentials
-        if config.has_option('digitalocean', 'client_id'):
-            self.client_id = config.get('digitalocean', 'client_id')
         if config.has_option('digitalocean', 'api_key'):
             self.api_key = config.get('digitalocean', 'api_key')
 
@@ -149,13 +148,12 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
             self.cache_path = config.get('digitalocean', 'cache_path')
         if config.has_option('digitalocean', 'cache_max_age'):
             self.cache_max_age = config.getint('digitalocean', 'cache_max_age')
-    
+
 
     def read_environment(self):
         ''' Reads the settings from environment variables '''
 
         # Setup credentials
-        if os.getenv("DIGITALOCEAN_CLIENT_ID"): self.client_id = os.getenv("DIGITALOCEAN_CLIENT_ID")
         if os.getenv("DIGITALOCEAN_API_KEY"):   self.api_key = os.getenv("DIGITALOCEAN_API_KEY")
 
 
@@ -182,7 +180,6 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
 
         self.args = parser.parse_args()
 
-        if self.args.client_id: self.client_id = self.args.client_id
         if self.args.api_key: self.api_key = self.args.api_key
         if self.args.cache_path: self.cache_path = self.args.cache_path
         if self.args.cache_max_age: self.cache_max_age = self.args.cache_max_age
@@ -193,11 +190,11 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
 
         regions = dict()
         for region in self.__do_api('/regions')['regions']:
-            regions[ region['id'] ] = region['slug'] or region['id']
+            regions[ region['slug'] ] = region['slug']
 
         droplets = self.__do_api('/droplets')['droplets']
         for droplet in droplets:
-            region_name = regions.get( droplet['region_id'], 'Unknown Region' )
+            region_name = regions.get( droplet['region']['slug'], 'Unknown Region' )
             self.add_droplet( droplet, region_name )
 
         self.write_to_cache(self.inventory, self.cache_path_cache)
@@ -212,22 +209,22 @@ or environment variables (DIGITALOCEAN_CLIENT_ID and DIGITALOCEAN_API_KEY)'''
     def add_droplet(self, droplet, region_name):
         ''' Adds a droplet to the inventory and index, as long as it is addressable'''
 
-        dest = droplet['ip_address']
+        dest = droplet['networks']['v4'][len(droplet['networks']['v4'])-1]['ip_address']
         if not dest:
             # Skip droplets we cannot address (when would this be on DigitalOcean?)
             return
 
         # Add to index
-        self.index[dest] = [ droplet['region_id'], droplet['id'] ]
+        self.index[dest] = [ droplet['region']['slug'], droplet['id'] ]
 
         # Inventory: Group by instance ID (always a group of 1)
         self.inventory[ droplet['id'] ] = [dest]
 
         # Inventory: Group by region
-        self.push( self.inventory, region_name, dest )  
+        self.push( self.inventory, region_name, dest )
 
         # Inventory: Group by name
-        self.push( self.inventory, droplet['name'], dest )  
+        self.push( self.inventory, droplet['name'], dest )
 
 
     def get_host_info(self):
